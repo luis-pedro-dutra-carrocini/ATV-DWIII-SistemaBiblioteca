@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lista de Livros</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Lista de Livros</h1>
+
+    <p id="pTipoBusca">Selecione o Tipo de Busca:</p>
+    <button class="button" style="width: 250px;" id="buttonCadastrados" onclick="mostrarTodos()">Todos os Livros Cadastrados</button>
+    <button class="button" style="width: 250px;" id="buttonDisponiveis" onclick="mostrarDisponiveis()">Livros Disponíveis</button>
+    <button class="button" style="width: 250px;" id="buttonEmprestados" onclick="mostrarEmprestados()">Livros Emprestados</button>
+    <button class="button" style="width: 250px;" id="buttonEmprestados" onclick="cadastrarLivros()">Cadastrar Livro</button>
+    <button class="button" style="width: 250px;" id="buttonCadastrados" onclick="window.location.href='index.html'">Menu</button>
+    <br><br>
+    <p id="mensagemAviso"></p><br>
+    <div id="livros-list"></div>
+  </div>
+  <br><br>
+
+  <script>
+    function cadastrarLivros(){
+      window.location.href="cadastrarLivro.html"
+    }
+
+    function excluirLivro(isbn){
+      // Função para carregar os dados dos livro da API
+      fetch('http://localhost:3000/livros/' + isbn, {method: "DELETE"})
+        .then(response => response.json())
+        .then(data => {
+          const mensagemAviso = document.getElementById('mensagemAviso');
+          if (data.mensagem){
+            mensagemAviso.innerHTML=data.mensagem;
+            mostrarTodos();
+          }else{
+            mensagemAviso.innerHTML="Não foi possível excluir o livro";
+          }
+        })
+        .catch(error => {
+          console.error('Erro ao carregar efetuar a ação:', error);
+        });
+    }
+
+    function alterarLivro(isbn){
+      window.location.href = "alterarLivro.html?isbn="+isbn;
+    }
+
+    function mostrarDisponiveis(){
+      const livrosList = document.getElementById('livros-list');
+      livrosList.innerHTML="";
+
+      document.getElementById('buttonDisponiveis').style.backgroundColor = "#bdbdbd";
+      document.getElementById('buttonCadastrados').style.backgroundColor = "#ddd";
+      document.getElementById('buttonEmprestados').style.backgroundColor = "#ddd";
+
+      // Função para carregar os dados dos livro da API
+      fetch('http://localhost:3000/livros/tipobusca/1')
+        .then(response => response.json())
+        .then(data => {
+          const livrosList = document.getElementById('livros-list');
+          if (data.mensagem){
+            livrosList.innerHTML=data.mensagem;
+          }
+          
+          // Criar a lista de livro no HTML
+          data.forEach(livro => {
+            const livroItem = document.createElement('div');
+            livroItem.classList.add('livro-item');
+            livroItem.innerHTML = `
+              <h2>${livro._titulo}</h2>
+              <p><strong>ISBN:</strong> ${livro._isbn}</p>
+              <p><strong>ID Autor:</strong> ${livro._idAutor}</p>
+              <p><strong>Descrição:</strong> ${livro._descricao}</p>
+              <p><strong>Sinopsia:</strong> ${livro._sinopsia}</p>
+              <p><strong>Data de Publicação:</strong> ${new Date(livro._dataPublicacao).toLocaleDateString('pt-BR')}</p>
+              <p><strong>Quantidade Disponível:</strong> ${livro._qtDisponivel}</p>
+            `;
+            livrosList.appendChild(livroItem);
+          });
+        })
+        .catch(error => {
+          console.error('Erro ao carregar dados:', error);
+        });
+    }
+
+    function mostrarEmprestados(){
+      const livrosList = document.getElementById('livros-list');
+      livrosList.innerHTML="";
+
+      document.getElementById('buttonDisponiveis').style.backgroundColor = "#ddd";
+      document.getElementById('buttonCadastrados').style.backgroundColor = "#ddd";
+      document.getElementById('buttonEmprestados').style.backgroundColor = "#bdbdbd";
+
+      // Função para carregar os dados dos livro da API
+      fetch('http://localhost:3000/livros/tipobusca/0')
+        .then(response => response.json())
+        .then(data => {
+          const livrosList = document.getElementById('livros-list');
+          if (data.mensagem){
+            livrosList.innerHTML=data.mensagem;
+          }
+          
+          // Criar a lista de livro no HTML
+          data.forEach(livro => {
+            const livroItem = document.createElement('div');
+            livroItem.classList.add('livro-item');
+            livroItem.innerHTML = `
+              <h2><strong>ISBN:</strong> ${livro._ISBNLivro}</h2>
+              <p><strong>Quantidade Emprestada:</strong> ${livro.quantidade}</p>
+            `;
+            livrosList.appendChild(livroItem);
+          });
+        })
+        .catch(error => {
+          console.error('Erro ao carregar dados:', error);
+        });
+    }
+
+    function mostrarTodos(){
+      const livrosList = document.getElementById('livros-list');
+      livrosList.innerHTML="";
+
+      document.getElementById('buttonDisponiveis').style.backgroundColor = "#ddd";
+      document.getElementById('buttonCadastrados').style.backgroundColor = "#bdbdbd";
+      document.getElementById('buttonEmprestados').style.backgroundColor = "#ddd";
+
+      // Função para carregar os dados dos livro da API
+      fetch('http://localhost:3000/livros')
+        .then(response => response.json())
+        .then(data => {
+          const livrosList = document.getElementById('livros-list');
+          if (data.mensagem){
+            livrosList.innerHTML=data.mensagem;
+          }
+          
+          // Criar a lista de livro no HTML
+          data.forEach(livro => {
+            const livroItem = document.createElement('div');
+            livroItem.classList.add('livro-item');
+            livroItem.innerHTML = `
+              <h2>${livro._titulo}</h2>
+              <p><strong>ISBN:</strong> ${livro._isbn}</p>
+              <p><strong>ID Autor:</strong> ${livro._idAutor}</p>
+              <p><strong>Descrição:</strong> ${livro._descricao}</p>
+              <p><strong>Sinopsia:</strong> ${livro._sinopsia}</p>
+              <p><strong>Data de Publicação:</strong> ${new Date(livro._dataPublicacao).toLocaleDateString('pt-BR')}</p>
+              <p><strong>Quantidade Disponível:</strong> ${livro._qtDisponivel}</p><br><br>
+              <div>
+              <b style="color: blue; cursor: pointer;" onclick="alterarLivro(${livro._isbn})">ALTERAR</b>&nbsp;&nbsp;
+              <b style="color: red; cursor: pointer;" onclick="excluirLivro(${livro._isbn})">EXCLUIR</b>
+              </div>
+            `;
+            livrosList.appendChild(livroItem);
+          });
+        })
+        .catch(error => {
+          console.error('Erro ao carregar dados:', error);
+        });
+    }
+
+    mostrarTodos();
+  </script>
+</body>
+</html>

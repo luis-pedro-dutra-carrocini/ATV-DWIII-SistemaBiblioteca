@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cadastrar Livro</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Cadastrar Livro</h1>
+    <p id="mensagemAviso"></p><br>
+    <div id="livros-list">
+      <div class="formCadastro">
+        <strong>Título:</strong><br><input type="text" id="titulo" class="inpuFormcadastro"><br><br>
+        <strong>ISBN:</strong>&nbsp;&nbsp;<input type="number" id="isbn" style="width: 25%;" class="inpuFormcadastro">&nbsp;&nbsp;&nbsp;&nbsp;
+        <strong>ID Autor:</strong>&nbsp;&nbsp;<input type="number" id="idAutor" style="width: 25%;" class="inpuFormcadastro"><br><br>
+        <strong>Descrição:</strong><br><input type="text" id="descricao" class="inpuFormcadastro"><br><br>
+        <strong>Sinopsia:</strong><br><input type="text" id="sinopsia" class="inpuFormcadastro"><br><br>
+        <strong>Data de Publicação:</strong>&nbsp;&nbsp;<input type="date" id="dataPublicacao" style="width: 20%;" class="inpuFormcadastro">&nbsp;&nbsp;&nbsp;&nbsp;
+        <strong>Quantidade Disponível:</strong>&nbsp;&nbsp;<input type="number" id="qtDisponivel" style="width: 20%;"   class="inpuFormcadastro""><br><br>
+        <div style="text-align: center;">
+        <button class="buttonForm" onclick="cadastrar()">Cadastrar</button>
+        <button class="buttonForm" onclick="cancelar()">Cancelar</button>
+        </div>
+        </div>
+    </div>
+  </div>
+
+  <script>
+    function cancelar(){
+      window.location.href="listalivros.html";
+    }
+
+    function cadastrar(){
+      const isbn = document.getElementById("isbn").value;
+      const titulo = document.getElementById("titulo").value;
+      const idAutor = document.getElementById("idAutor").value;
+      const descricao = document.getElementById("descricao").value;
+      const sinopsia = document.getElementById("sinopsia").value;
+      const dataPublicacao = document.getElementById("dataPublicacao").value;
+      const qtDisponivel = document.getElementById("qtDisponivel").value;
+      
+
+      fetch('http://localhost:3000/livros/', {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            titulo: titulo,
+            isbn: isbn,
+            sinopsia: sinopsia,
+            idAutor: idAutor,
+            dataPublicacao: dataPublicacao,
+            descricao: descricao,
+            qtDisponivel: qtDisponivel
+        })
+      })
+        .then(response => response.json())
+        .then(data => {
+          const mensagemAviso = document.getElementById('mensagemAviso');
+          if (data.mensagem){
+            if (data.cadastrou){
+              alert(data.mensagem);
+              return window.location.href="listaLivros.html";
+            }else{
+              return mensagemAviso.innerHTML=data.mensagem;
+            }
+          }else{
+            mensagemAviso.innerHTML="Não foi possível cadastrar o livro";
+          }
+        })
+        .catch(error => {
+          console.error('Erro ao efetuar a ação:', error);
+        });
+
+    }
+  </script>
+</body>
+</html>

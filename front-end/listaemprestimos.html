@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lista de Empréstimos</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Lista de Empréstimos</h1>
+    <p id="pTipoBusca">Selecione o Tipo de Busca:</p>
+    <button class="button" style="width: 250px;" id="buttonCadastrados" onclick="mostrarEmprestimos(1)">Empréstimos Realizados</button>
+    <button class="button" style="width: 250px;" id="buttonEmprestados" onclick="mostrarEmprestimos(2)">Empréstimos Ativos</button>
+    <button class="button" style="width: 250px;" id="buttonDevolvidos" onclick="mostrarEmprestimos(0)">Empréstimos Devolvidos</button>
+    <button class="button" style="width: 250px;" id="buttonCadastrar" onclick="realizar()">Realizar Empréstimo</button>
+    <br><br>
+    <p id="mensagemAviso"></p><br>
+    <div id="emprestimos-list"></div>
+  </div>
+  <br><br>
+
+  <script>
+    function realizar(){
+      window.location.href="cadastrarEmprestimo.html"
+    }
+
+    function excluirEmprestimo(id){
+      // Função para carregar os dados dos livro da API
+      fetch('http://localhost:3000/emprestimos/' + id, {method: "DELETE"})
+        .then(response => response.json())
+        .then(data => {
+          const mensagemAviso = document.getElementById('mensagemAviso');
+          if (data.mensagem){
+            mensagemAviso.innerHTML=data.mensagem;
+            mostrarEmprestimos(1);
+          }else{
+            mensagemAviso.innerHTML="Não foi possível excluir o empréstimo";
+          }
+        })
+        .catch(error => {
+          console.error('Erro ao carregar efetuar a ação:', error);
+        });
+    }
+
+    function gerenciar(id){
+      window.location.href = "alterarEmprestimo.html?id="+id;
+    }
+
+    mostrarEmprestimos(1);
+
+    function mostrarEmprestimos(tipo){
+      const emprestimoList = document.getElementById('emprestimos-list');
+      emprestimoList.innerHTML="";
+
+      if (tipo === 1){
+        document.getElementById('buttonCadastrados').style.backgroundColor = "#bdbdbd";
+        document.getElementById('buttonEmprestados').style.backgroundColor = "#ddd";
+        document.getElementById('buttonDevolvidos').style.backgroundColor = "#ddd";
+      }else if (tipo === 2){
+        document.getElementById('buttonCadastrados').style.backgroundColor = "#ddd";
+        document.getElementById('buttonEmprestados').style.backgroundColor = "#bdbdbd";
+        document.getElementById('buttonDevolvidos').style.backgroundColor = "#ddd";
+      }else{
+        document.getElementById('buttonCadastrados').style.backgroundColor = "#ddd";
+        document.getElementById('buttonEmprestados').style.backgroundColor = "#ddd";
+        document.getElementById('buttonDevolvidos').style.backgroundColor = "#bdbdbd";
+      }
+
+      // Função para carregar os dados dos livro da API
+      fetch('http://localhost:3000/emprestimos/buscageral/' + tipo)
+        .then(response => response.json())
+        .then(data => {
+          const emprestimoList = document.getElementById('emprestimos-list');
+          if (data.mensagem){
+            emprestimoList.innerHTML=data.mensagem;
+          }
+          
+          // Criar a lista de livro no HTML
+          data.forEach(emprestimo => {
+            const emprestimoItem = document.createElement('div');
+            emprestimoItem.classList.add('emprestimo-item');
+            emprestimoItem.innerHTML = `
+              <h2>${emprestimo._id}</h2>
+              <p><strong>CPF Usuário:</strong> ${emprestimo._CPFUsuario}</p>
+              <p><strong>ISBN's de Livros Emprestados:</strong> ${emprestimo._ISBNLivro}</p>
+              <p><strong>Valor: </strong>R$ ${emprestimo._valor}</p>
+              <p><strong>Status:</strong> ${emprestimo._status}</p>
+              <p><strong>Data Máx. Devolução:</strong> ${new Date(emprestimo._maxDataDevolucao).toLocaleDateString('pt-BR')}</p><br><br>
+              <div>
+              <b style="color: blue; cursor: pointer;" onclick="gerenciar(${emprestimo._id})">ALTERAR</b>&nbsp;&nbsp;
+              <b style="color: red; cursor: pointer;" onclick="excluirEmprestimo(${emprestimo._id})">EXCLUIR</b>
+              <div>
+            `;
+            emprestimoList.appendChild(emprestimoItem);
+          });
+        })
+        .catch(error => {
+          console.error('Erro ao carregar dados:', error);
+        });
+    }
+
+  </script>
+</body>
+</html>

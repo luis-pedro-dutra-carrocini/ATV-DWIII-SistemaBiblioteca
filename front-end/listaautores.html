@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lista de Autores</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Lista de Autores</h1>
+    <button class="button" style="width: 250px;" id="buttonCadastrar" onclick="cadastrarAutor()">Cadastrar Autor</button>
+    <button class="button" style="width: 250px;" id="buttonCadastrados" onclick="window.location.href='index.html'">Menu</button>
+    <br><br>
+    <p id="mensagemAviso"></p><br>
+    <div id="autores-list"></div>
+  </div>
+  <br><br>
+
+  <script>
+    function cadastrarAutor(){
+      window.location.href="cadastrarAutor.html";
+    }
+
+    function alterarAutor(id){
+      window.location.href="alterarAutor.html?id="+id;
+    }
+
+    function excluirAutor(id){
+        fetch('http://localhost:3000/autores/' + id, {method: "DELETE"})
+        .then(response => response.json())
+        .then(data => {
+          const mensagemAviso = document.getElementById('mensagemAviso');
+          if (data.mensagem){
+            mensagemAviso.innerHTML=data.mensagem;
+            mostrarTodos();
+          }else{
+            mensagemAviso.innerHTML="Não foi possível excluir o autor";
+          }
+        })
+        .catch(error => {
+          console.error('Erro ao carregar efetuar a ação:', error);
+        });
+    }
+
+    mostrarTodos();
+
+    // Função para carregar os dados dos autores da API
+    function mostrarTodos(){
+      document.getElementById('autores-list').innerHTML = '';
+      fetch('http://localhost:3000/autores')
+        .then(response => response.json())
+        .then(data => {
+          const autoresList = document.getElementById('autores-list');
+          
+          // Criar a lista de autores no HTML
+          data.forEach(autor => {
+            const autorItem = document.createElement('div');
+            autorItem.classList.add('autor-item');
+            autorItem.innerHTML = `
+              <h2>${autor._nome}</h2>
+              <p><strong>ID:</strong> ${autor._id}</p>
+              <p><strong>Biografia:</strong> ${autor._biografia}</p>
+              <p><strong>Data de Nascimento:</strong> ${new Date(autor._dataNascimento).toLocaleDateString('pt-BR')}</p>
+              <div>
+              <b style="color: blue; cursor: pointer;" onclick="alterarAutor(${autor._id})">ALTERAR</b>&nbsp;&nbsp;
+              <b style="color: red; cursor: pointer;" onclick="excluirAutor(${autor._id})">EXCLUIR</b>
+              </div>
+            `;
+            autoresList.appendChild(autorItem);
+          });
+        })
+        .catch(error => {
+          console.error('Erro ao carregar dados:', error);
+        });
+    }
+  </script>
+</body>
+</html>

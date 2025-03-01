@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lista de Usuários</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Lista de Usuários</h1>
+    <button class="button" style="width: 250px;" id="buttonCadastrar" onclick="cadastrarUsuario()">Cadastrar Usuário</button>
+    <button class="button" style="width: 250px;" id="buttonCadastrados" onclick="window.location.href='index.html'">Menu</button>
+    <br><br>
+    <p id="mensagemAviso"></p><br>
+    <div id="usuarios-list"></div>
+  </div>
+  <br><br>
+
+  <script>
+    function cadastrarUsuario(){
+      window.location.href="cadastrarUsuario.html";
+    }
+
+    function alterarUsuario(cpf){
+      window.location.href="alterarUsuario.html?cpf="+cpf;
+    }
+
+    function mostrarUsuarios(){
+      // Função para carregar os dados dos usuarios da API
+      document.getElementById('usuarios-list').innerHTML = "";
+      fetch('http://localhost:3000/usuarios')
+        .then(response => response.json())
+        .then(data => {
+          const usuariosList = document.getElementById('usuarios-list');
+          
+          // Criar a lista de usuarioes no HTML
+          data.forEach(usuario => {
+            const usuarioItem = document.createElement('div');
+            usuarioItem.classList.add('usuario-item');
+            usuarioItem.innerHTML = `
+              <h2>${usuario._nome}</h2>
+              <p><strong>CPF:</strong> ${usuario._cpf}</p>
+              <p><strong>Telefone:</strong> ${usuario._telefone}</p>
+              <p><strong>Data de Nascimento:</strong> ${new Date(usuario._dataNascimento).toLocaleDateString('pt-BR')}</p><br><br>
+              <div>
+                <b style="color: blue; cursor: pointer;" onclick="alterarUsuario(${usuario._cpf})">ALTERAR</b>&nbsp;&nbsp;
+                <b style="color: red; cursor: pointer;" onclick="excluirUsuario(${usuario._cpf})">EXCLUIR</b>
+              </div>
+            `;
+            usuariosList.appendChild(usuarioItem);
+          });
+        })
+        .catch(error => {
+          console.error('Erro ao carregar dados:', error);
+        });
+    }
+    
+    mostrarUsuarios();
+
+      function excluirUsuario(cpf){
+        fetch('http://localhost:3000/usuarios/' + cpf, {method: "DELETE"})
+        .then(response => response.json())
+        .then(data => {
+          const mensagemAviso = document.getElementById('mensagemAviso');
+          if (data.mensagem){
+            mensagemAviso.innerHTML=data.mensagem;
+            mostrarUsuarios();
+          }else{
+            mensagemAviso.innerHTML="Não foi possível excluir o usuário";
+          }
+        })
+        .catch(error => {
+          console.error('Erro ao carregar efetuar a ação:', error);
+        });
+    }
+  </script>
+</body>
+</html>

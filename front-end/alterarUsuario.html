@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alterar Usuário</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Alterar Usuário</h1>
+    <p id="mensagemAviso"></p><br>
+    <div id="usuarios-list"></div>
+  </div>
+
+  <script>
+    // Obtendo o ISBN
+    const parametros = new URLSearchParams(window.location.search);
+    const cpf = parametros.get("cpf");
+
+    // Função para carregar os dados do usuário da API
+    fetch('http://localhost:3000/usuarios/'+cpf)
+      .then(response => response.json())
+      .then(data => {
+
+        // determinando o local onde seram exibidos os resultados
+        const usuariosList = document.getElementById('usuarios-list');
+
+        // Mudando o formato da data
+        const dataFormatada = data._dataNascimento.split("T")[0];
+
+        // Verificando o resultado
+        if (data.mensagem){
+          usuariosList.innerHTML=data.mensagem;
+        }else{
+
+          // Exibindo o resultado
+          usuariosList.innerHTML = `
+              <div class="formCadastro">
+              <strong>Nome:</strong><br><input type="text" id="nome" class="inpuFormcadastro" value="${data._nome}"><br><br>
+              <strong>CPF:</strong><br><input type="number" maxlength="11" id="cpf" class="inpuFormcadastro" value="${data._cpf}"><br><br>
+              <strong>Telefone:</strong><br><input type="number" maxlength="11" id="telefone" class="inpuFormcadastro" value="${data._telefone}"><br><br>
+              <strong>Data de Nascimento:</strong>&nbsp;&nbsp;<input type="date" id="dataNascimento" style="width: 20%;" class="inpuFormcadastro" value="${dataFormatada}"><br><br>
+              <div style="text-align: center;">
+              <button class="buttonForm" onclick="alterar()">Alterar</button>
+              <button class="buttonForm" onclick="cancelar()">Cancelar</button>
+              </div>
+              </div>
+            `;
+        }  
+        
+      })
+      .catch(error => {
+        console.error('Erro ao carregar dados:', error);
+      });
+
+    // Função para voltar a página de lista de usuários
+    function cancelar(){
+      window.location.href="listaUsuarios.html";
+    }
+
+    // Função para alterar os dados
+    function alterar(){
+
+      // Obtendo os dados do formulário
+      const nome = document.getElementById("nome").value;
+      const novocpf = document.getElementById("cpf").value;
+      const telefone = document.getElementById("telefone").value;
+      const dataNascimento = document.getElementById("dataNascimento").value;  
+      
+      // Solicitação de alteração
+      fetch('http://localhost:3000/usuarios/' + cpf, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            nome: nome,
+            novocpf: novocpf,
+            dataNascimento: dataNascimento,
+            telefone: telefone
+        })
+      })
+        .then(response => response.json())
+        .then(data => {
+
+          // Verificando a mensagem
+          const mensagemAviso = document.getElementById('mensagemAviso');
+          if (data.mensagem){
+            mensagemAviso.innerHTML=data.mensagem;
+          }else{
+            mensagemAviso.innerHTML="Não foi possível alterar o usuário";
+          }
+        })
+
+        .catch(error => {
+          console.error('Erro ao efetuar a ação:', error);
+        });
+    }
+
+  </script>
+</body>
+</html>

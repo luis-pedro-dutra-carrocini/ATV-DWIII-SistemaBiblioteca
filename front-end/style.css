@@ -1,0 +1,245 @@
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  /* body */
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+    line-height: 1.6;
+    padding: 20px;
+  }
+  
+  .container {
+    width: 90%;
+    margin: 0 auto;
+    max-width: 1200px;
+    text-align: center;
+  }
+  
+  h1 {
+    font-size: 2.5rem;
+    color: #444;
+    margin-bottom: 30px;
+  }
+  
+
+  /* Atributos dos autores*/
+  #autores-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+  }
+
+  .autor-item {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 20px;
+    width: 350px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: left;
+  }
+  
+  .autor-item h2 {
+    font-size: 1.6rem;
+    color: #333;
+    margin-bottom: 15px;
+    text-align: center;
+  }
+
+  .autor-item div {
+    text-align: center;
+  }
+  
+  .autor-item p {
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 10px;
+  }
+  
+  .autor-item p strong {
+    color: #333;
+  }
+
+
+
+  /* Atributos Usuários */
+  #usuarios-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+  }
+
+  .usuario-item {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 20px;
+    width: 350px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: left;
+  }
+  
+  .usuario-item h2 {
+    font-size: 1.6rem;
+    color: #333;
+    margin-bottom: 15px;
+    text-align: center;
+  }
+
+  .usuario-item div {
+    text-align: center;
+  }
+  
+  .usuario-item p {
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 10px;
+  }
+  
+  .usuario-item p strong {
+    color: #333;
+  }
+  
+
+
+  /* Atributos Livros */
+  #livros-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+  }
+
+  .livro-item {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 20px;
+    width: 350px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: left;
+  }
+  
+  .livro-item h2 {
+    font-size: 1.6rem;
+    color: #333;
+    margin-bottom: 15px;
+    text-align: center;
+  }
+
+  .livro-item div {
+    text-align: center;
+  }
+  
+  .livro-item p {
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 10px;
+  }
+  
+  .livro-item p strong {
+    color: #333;
+  }
+
+
+
+  /* Atributos Botões e Form */
+  #pTipoBusca{
+    font-size: 25px;
+    color: #444;
+  }
+
+  .button{
+    margin: 6px;
+    font-size: 18px;
+    padding: 8px;
+    background-color: #ddd;
+    border-radius: 13px;
+    border: none;
+  }
+
+  .button:hover{
+    background-color: #bdbdbd;
+  }
+
+  .formCadastro{
+    background-color: white;
+    width: 90%;
+    padding-top: 30px;
+    padding-bottom: 30px;
+    border-radius: 15px;
+    text-align: left;
+    padding-left: 30px;
+    font-size: 20px;
+  }
+
+  .inpuFormcadastro{
+    font-size: 20px;
+    padding: 3px;
+    border: none;
+    border-bottom: solid 1px black;
+    width: 95%;
+  }
+
+  .buttonForm{
+    padding: 6px;
+    font-size: 20px;
+    border-radius: 10px;
+    background-color: #A4A7B0;
+    width: 40%;
+    color: white;
+    border: none;
+  }
+
+  .buttonForm:hover{
+    background-color: #91949c;
+  }
+  
+
+
+  /* Atributos de Empréstimo */
+  #emprestimos-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+  }
+
+  .emprestimo-item {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 20px;
+    width: 350px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: left;
+  }
+  
+  .emprestimo-item h2 {
+    font-size: 1.6rem;
+    color: #333;
+    margin-bottom: 15px;
+    text-align: center;
+  }
+  
+  .emprestimo-item p {
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 10px;
+  }
+
+  .emprestimo-item div {
+    text-align: center;
+  }
+  
+  .emprestimo-item p strong {
+    color: #333;
+  }

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alterar Empréstimo</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Alterar Empréstimo</h1>
+    <p id="mensagemAviso"></p><br>
+    <div id="emprestimos-list"></div>
+  </div>
+
+  <script>
+    // Obtendo o ID do empréstimo
+    const parametros = new URLSearchParams(window.location.search);
+    const id = parametros.get("id");
+    var ISBNLivro = [];
+
+    function addLivro(isbn){
+      let divExibir = document.getElementById('dISBNs');
+      ISBNLivro.push(isbn);
+
+      divExibir.innerHTML="";
+      ISBNLivro.forEach(isbn => {
+        divExibir.innerHTML+=`
+        <p>${isbn} &nbsp;&nbsp;<b style="color: red; cursor: pointer;" onclick="removeLivro(${isbn})">X</b></p>
+        `;
+      });
+
+      document.getElementById('isbn').value="";
+    }
+
+    function removeLivro(isbn){
+      let divExibir = document.getElementById('dISBNs');
+      ISBNLivro = ISBNLivro.filter(num => Number(num) !== Number(isbn));
+
+      divExibir.innerHTML="";
+      ISBNLivro.forEach(isbn => {
+        divExibir.innerHTML+=`
+        <p>${isbn} &nbsp;&nbsp;<b style="color: red; cursor: pointer;" onclick="removeLivro(${isbn})">X</b></p>
+        `;
+      });
+    }
+
+    // Função para carregar os dados do empréstimo da API
+    fetch('http://localhost:3000/emprestimos/'+id)
+      .then(response => response.json())
+      .then(data => {
+
+        // Definindo onde será exibido o empréstimo
+        const emprestimosList = document.getElementById('emprestimos-list');
+
+        // Mudando o formato da data
+        const dataFormatada = data._maxDataDevolucao.split("T")[0];
+
+        // Verificando a mensagem
+        if (data.mensagem){
+          emprestimosList.innerHTML=data.mensagem;
+        }else{
+          ISBNLivro = data._ISBNLivro;
+
+          // Exibindo os dados 
+          emprestimosList.innerHTML = `
+              <div class="formCadastro">
+              <strong>CPF Usuário:</strong><br><input type="text" id="cpfUsuario" class="inpuFormcadastro" value="${data._CPFUsuario}"><br><br>
+              <strong>Adicionar Livro pelo ISBN:</strong><br><input type="number" id="isbn" class="inpuFormcadastro"><button class="button" onclick="addLivro(document.getElementById('isbn').value)"><b>+</b></button><br><br>
+              <strong>Livros emprestados:</strong>
+              <div id="dISBNs"></div><br>
+              <strong>Data previsista da Devolução:</strong>&nbsp;&nbsp;<input type="date" id="maxDataDevolucao" style="width: 20%;" class="inpuFormcadastro" value="${dataFormatada}"><br><br>
+              <strong>Valor:</strong><br><input type="text" id="valor" class="inpuFormcadastro" value="${data._valor}"><br><br>
+              <strong>Status:</strong><br>
+              <select name="status" id="status" class="inpuFormcadastro">
+                <option value="">Selecione</option>
+                <option value="Emprestado">Emprestado</option>
+                <option value="Devolvido">Devolvido</option>
+              </select><br><br>
+              <div style="text-align: center;">
+              <button class="buttonForm" onclick="alterar()">Alterar</button>
+              <button class="buttonForm" onclick="cancelar()">Cancelar</button>
+              </div>
+              </div>
+            `;
+
+            let divExibir = document.getElementById('dISBNs');
+            divExibir.innerHTML="";
+            ISBNLivro.forEach(isbn => {
+              divExibir.innerHTML+=`
+              <p>${isbn} &nbsp;&nbsp;<b style="color: red; cursor: pointer;" onclick="removeLivro(${isbn})">X</b></p>
+              `;
+            });
+
+            document.getElementById('isbn').value="";
+              }
+        
+      })
+      .catch(error => {
+        console.error('Erro ao carregar dados:', error);
+      });
+    
+    // Função para voltar a página de lista de empréstimos
+    function cancelar(){
+      window.location.href="listaEmprestimos.html";
+    }
+
+    function alterar(){
+      const cpfUsuario = document.getElementById("cpfUsuario").value;
+      const maxDataDevolucao = document.getElementById("maxDataDevolucao").value;
+      const valor = document.getElementById("valor").value;
+      const status = document.getElementById("status").value;  
+
+      fetch('http://localhost:3000/emprestimos/' + id, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            cpfUsuario: cpfUsuario,
+            maxDataDevolucao: maxDataDevolucao,
+            valor: valor,
+            status: status,
+            isbnLivro: ISBNLivro
+        })
+      })
+        .then(response => response.json())
+        .then(data => {
+          const mensagemAviso = document.getElementById('mensagemAviso');
+          if (data.mensagem){
+            mensagemAviso.innerHTML=data.mensagem;
+          }else{
+            mensagemAviso.innerHTML="Não foi possível alterar o emprestimo";
+          }
+        })
+        .catch(error => {
+          console.error('Erro ao efetuar a ação:', error);
+        });
+
+    }
+
+  </script>
+</body>
+</html>

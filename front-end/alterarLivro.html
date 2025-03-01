@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alterar Livro</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Alterar Livro</h1>
+    <p id="mensagemAviso"></p><br>
+    <div id="livros-list"></div>
+  </div>
+
+  <script>
+    // Função para voltar a página de lista dos livros
+    function cancelar(){
+      window.location.href="listalivros.html";
+    }
+
+    // Função para alterar os dados
+    function alterar(){
+
+      // Obtendo os dados do formulário
+      const isbnNovo = document.getElementById("isbn").value;
+      const titulo = document.getElementById("titulo").value;
+      const idAutor = document.getElementById("idAutor").value;
+      const descricao = document.getElementById("descricao").value;
+      const sinopsia = document.getElementById("sinopsia").value;
+      const dataPublicacao = document.getElementById("dataPublicacao").value;
+      const qtDisponivel = document.getElementById("qtDisponivel").value;
+      
+      // Solicitando a alteração da API
+      fetch('http://localhost:3000/livros/' + isbn, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            titulo: titulo,
+            isbnNovo: isbnNovo,
+            sinopsia: sinopsia,
+            idAutor: idAutor,
+            dataPublicacao: dataPublicacao,
+            descricao: descricao,
+            qtDisponivel: qtDisponivel
+        })
+      })
+        .then(response => response.json())
+        .then(data => {
+
+          // Verificando a mensagem
+          const mensagemAviso = document.getElementById('mensagemAviso');
+          if (data.mensagem){
+            mensagemAviso.innerHTML=data.mensagem;
+          }else{
+            mensagemAviso.innerHTML="Não foi possível alterar o livro";
+          }
+          
+        })
+        .catch(error => {
+          console.error('Erro ao efetuar a ação:', error);
+        });
+
+    }
+
+    // Obtendo o ISBN
+    const parametros = new URLSearchParams(window.location.search);
+    const isbn = parametros.get("isbn");
+
+    // Função para carregar os dados dos livro da API
+    fetch('http://localhost:3000/livro/'+isbn)
+      .then(response => response.json())
+      .then(data => {
+
+        // Local para exibir os resultados
+        const livrosList = document.getElementById('livros-list');
+
+        // Alterando o formato da data
+        const dataFormatada = data._dataPublicacao.split("T")[0];
+
+        // Verificando a resposta
+        if (data.mensagem){
+          livrosList.innerHTML=data.mensagem;
+        }else{
+
+          // Exibindo a resposta
+          livrosList.innerHTML = `
+              <div class="formCadastro">
+              <strong>Título:</strong><br><input type="text" id="titulo" class="inpuFormcadastro" value="${data._titulo}"><br><br>
+              <strong>ISBN:</strong>&nbsp;&nbsp;<input type="number" id="isbn" style="width: 25%;" class="inpuFormcadastro" value="${data._isbn}">&nbsp;&nbsp;&nbsp;&nbsp;
+              <strong>ID Autor:</strong>&nbsp;&nbsp;<input type="number" id="idAutor" style="width: 25%;" class="inpuFormcadastro" value="${data._idAutor}"><br><br>
+              <strong>Descrição:</strong><br><input type="text" id="descricao" class="inpuFormcadastro" value="${data._descricao}"><br><br>
+              <strong>Sinopsia:</strong><br><input type="text" id="sinopsia" class="inpuFormcadastro" value="${data._sinopsia}"><br><br>
+              <strong>Data de Publicação:</strong>&nbsp;&nbsp;<input type="date" id="dataPublicacao" style="width: 20%;" class="inpuFormcadastro" value="${dataFormatada}">&nbsp;&nbsp;&nbsp;&nbsp;
+              <strong>Quantidade Disponível:</strong>&nbsp;&nbsp;<input type="number" id="qtDisponivel" style="width: 20%;"   class="inpuFormcadastro" value="${data._qtDisponivel}"><br><br>
+              <div style="text-align: center;">
+              <button class="buttonForm" onclick="alterar()">Alterar</button>
+              <button class="buttonForm" onclick="cancelar()">Cancelar</button>
+              </div>
+              </div>
+            `;
+        }  
+        
+      })
+      .catch(error => {
+        console.error('Erro ao carregar dados:', error);
+      });
+  </script>
+</body>
+</html>

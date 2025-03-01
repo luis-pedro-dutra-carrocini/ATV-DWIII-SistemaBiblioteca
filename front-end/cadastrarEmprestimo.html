@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cadastrar Empréstimo</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Cadastrar Empréstimo</h1>
+    <p id="mensagemAviso"></p><br>
+    <div id="livros-list">
+      <div class="formCadastro">
+        <div class="formCadastro">
+          <strong>CPF Usuário:</strong><br><input type="number" id="cpfUsuario" class="inpuFormcadastro" ><br><br>
+          <strong>Valor:</strong><br><input type="number" id="valor" class="inpuFormcadastro"><br><br>
+          <strong>Data para a Devolução:</strong>&nbsp;&nbsp;<input type="date" id="maxDataDevolucao" style="width: 20%;" class="inpuFormcadastro"><br><br>
+          <strong>Adicionar Livro pelo ISBN:</strong><br><input type="number" id="isbn" class="inpuFormcadastro"><button class="button" onclick="addLivro(document.getElementById('isbn').value)"><b>+</b></button><br><br>
+          <strong>Livros à emprestar:</strong>
+          <div id="dISBNs"></div>
+          <br>
+          <div style="text-align: center;">
+          <button class="buttonForm" onclick="cadastrar()">Cadastrar</button>
+          <button class="buttonForm" onclick="cancelar()">Cancelar</button>
+          </div>
+          </div>
+    </div>
+  </div>
+
+  <script>
+    var ISBNLivro = [];
+    function addLivro(isbn){
+      let divExibir = document.getElementById('dISBNs');
+      ISBNLivro.push(isbn);
+
+      divExibir.innerHTML="";
+      ISBNLivro.forEach(isbn => {
+        divExibir.innerHTML+=`
+        <p>${isbn} &nbsp;&nbsp;<b style="color: red; cursor: pointer;" onclick="removeLivro(${isbn})">X</b></p>
+        `;
+      });
+
+      document.getElementById('isbn').value="";
+    }
+
+    function removeLivro(isbn){
+      let divExibir = document.getElementById('dISBNs');
+      ISBNLivro = ISBNLivro.filter(num => Number(num) !== Number(isbn));
+
+      divExibir.innerHTML="";
+      ISBNLivro.forEach(isbn => {
+        divExibir.innerHTML+=`
+        <p>${isbn} &nbsp;&nbsp;<b style="color: red; cursor: pointer;" onclick="removeLivro(${isbn})">X</b></p>
+        `;
+      });
+    }
+
+    function cancelar(){
+      window.location.href="listaEmprestimos.html";
+    }
+
+    function cadastrar(){
+      const cpfUsuario = document.getElementById("cpfUsuario").value;
+      const valor = document.getElementById("valor").value;
+      const maxDataDevolucao = document.getElementById("maxDataDevolucao").value;
+
+      fetch('http://localhost:3000/emprestimos/', {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            cpfUsuario: cpfUsuario,
+            isbnLivro: ISBNLivro,
+            valor: valor,
+            maxDataDevolucao: maxDataDevolucao,
+            valor: valor
+        })
+      })
+        .then(response => response.json())
+        .then(data => {
+          const mensagemAviso = document.getElementById('mensagemAviso');
+          if (data.mensagem){
+            if (data.cadastrou){
+              alert(data.mensagem);
+              return window.location.href="listaEmprestimos.html";
+            }else{
+              return mensagemAviso.innerHTML=data.mensagem;
+            }
+          }else{
+            mensagemAviso.innerHTML="Não foi possível cadastrar o empréstimo";
+          }
+        })
+        .catch(error => {
+          console.error('Erro ao efetuar a ação:', error);
+        });
+
+    }
+  </script>
+</body>
+</html>
