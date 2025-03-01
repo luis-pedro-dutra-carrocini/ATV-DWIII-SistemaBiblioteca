@@ -16,28 +16,27 @@ O site apresenta as seguintes páginas, com as seguintes funções:
 
 ## 📃 Obter cópia
 
-Para obter uma cópia basta baixar todos os arquivos presentes nesse repositório, além de executar o código SQL do Banco de Dados em um SGBD (Foi utilizado o MySQL), depois executar o comando "node index.js" no terminal do back-end, abrindo em um navagador (Chrome, Edge, FireFox, etc.) o arquivo index.html que fará a consulta a URL (http://localhost:3000/) retornando os dados desejados.
+Para obter uma cópia basta baixar todos os arquivos presentes nesse repositório, além de executar o camando (npm install) na pasta back-end, de um terminal que tenha permissões para isso, no caso foi utilizado o VS Code e executado no seu terminal "Command Prompt", depois disso deve-se executar o comando "node index.js" no terminal do back-end, abrindo depois em um navagador (Chrome, Edge, FireFox, etc.) o arquivo index.html (na pasta front-end) que fará a consulta a URL (http://localhost:3000/) retornando os dados desejados.
 
 
 ## 📋 Pré-requisitos
 
-Para que o site possa apresentar pleno funcionamento é necessário um navegador com acessoa a Internet, e que suporte JavaScript. Além de um SQGB local ou hospedado na nuvem para Banco de Dados.
+Para que o site possa apresentar pleno funcionamento é necessário um navegador com acessoa a Internet, e que suporte JavaScript. Além de alguma versão mais atual do Node.js.
 
 
 ## 🔧 Instalação
 
 * Baixe os arquivos e pastas contidas nesse repositório e os coloque em uma pasta;
-* Execute o código do Banco de Dados (CreateBiblioteca.sql) em um SGBD (Sistema Gerenciador de Banco de Dados), Online ou Local - Recomendável o MySQL Local;
 * Deixe ativado o JavaScript no seu navegador;
 * Instale o node em sua máquina;
-* Execute no terminal do repositório o comando "node index.html";
-* Abra em um navegador o arquivo index.html;
+* Execute no terminal do repositório, na pasta back-end, o comando "npm install";
+* Execute no terminal do repositório, na pasta back-end, o comando "node index.html" para iniciar o servidor back-end;
+* Abra em um navegador o arquivo index.html que esta na pasta front-end;
 
 ## 🛠️ Construído com
 
 Ferramentas:
 * Visual Studio Code- Editor de Código-Fonte;
-* MySQL - Sistema Gerenciador de Banco de Dados;
 * Postman - Usado para os Testes do Back-End;
 
 Linguagens:
@@ -45,9 +44,8 @@ Linguagens:
 * JavaScript - Linguagem de Programação
 * CSS - Linguagem Web de Formatação;
 * Node JS - Utilizado no Back-End, fazendo a conexão com o Banco de Dados;
-* SQL - Utilizado para a criação e interação com o banco de dados;
 
 ## ✒️ Autores
 
-* **[Luís Pedro Dutra Carrocini](https://github.com/luis-pedro-dutra-carrocini)** - *Criação do Back-End; Criação do Banco de Dados;*
+* **[Luís Pedro Dutra Carrocini](https://github.com/luis-pedro-dutra-carrocini)** - *Criação do Back-End; Desenvolvimento do Front-End;*
 * **[Maria Luiza Barbosa](https://github.com/mluizabss)** - *Criação do Design; Criação do Front-End;*
